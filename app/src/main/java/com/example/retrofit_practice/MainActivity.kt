@@ -21,14 +21,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://172.30.1.22:8000")
+            .baseUrl("http:/172.30.1.24:8000")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         var testRetrofit : testRetrofit = retrofit.create(testRetrofit::class.java)
         btn.setOnClickListener{
             var id = id.text.toString()
             var pw = pw.text.toString()
-            testRetrofit.test(id,pw)?.enqueue(object: Callback<ReturnDateModel>{
+            var name = name.text.toString()
+            var birth = birth.text.toString()
+            testRetrofit.test(id,pw,name, birth)?.enqueue(object: Callback<ReturnDateModel>{
                 override fun onResponse(
                     call: Call<ReturnDateModel>,
                     response: Response<ReturnDateModel>

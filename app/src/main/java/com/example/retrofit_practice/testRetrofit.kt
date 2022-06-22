@@ -12,6 +12,8 @@ interface testRetrofit {
     fun test(
         @Field("userid") userid: String,
         @Field("userpassword") userpassword : String,
+        @Field("username") username : String,
+        @Field("userbirth") userbirth : String,
     ) : Call<ReturnDateModel>
 
 }
