@@ -2,6 +2,7 @@ package com.example.retrofit_practice
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.os.Message
 import android.util.Log
 import android.widget.Toast
@@ -17,40 +18,67 @@ import kotlin.math.roundToLong
 
 
 class MainActivity : AppCompatActivity() {
-    var data:ReturnDateModel? = null
+    lateinit var data:ReturnDateModel
+    private var myThread : MyThread? = null
+    lateinit var myHandler : MyHandler
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        myHandler = MyHandler()
+
+        button_seoul.setOnClickListener {
+            myThread = MyThread("seoul")
+            myThread!!.start()
+        }
+    }
+    inner class MyThread(regionData : String) : Thread() {
+        var region = regionData
         var key = "218c73d60692af6965fa11c043c3bf2d"
         var lang = "kr"
         var unit = "metric"
-        var retrofit = Retrofit.Builder()
-            .baseUrl("http://api.openweathermap.org")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        var testRetrofit : testRetrofit = retrofit.create(testRetrofit::class.java)
-        button_seoul.setOnClickListener{
-            var region = "seoul"
-            testRetrofit.getWeather(region, key, lang, unit)?.enqueue(object: Callback<ReturnDateModel>{
-                override fun onResponse(
-                    call: Call<ReturnDateModel>,
-                    response: Response<ReturnDateModel>
-                ) {
-                    data = response.body()
-                    Log.d("성공", "onResponse: 성공")
-                    Log.d("값", "onResponse:${data}")
-                    Toast.makeText(this@MainActivity, "성공", Toast.LENGTH_LONG).show()
-                    var temp = (data?.main?.temp?.toFloat())?.minus(273.0)
-                    textView.append("온도는 ${String.format("%.1f",temp)}\n")
-                    textView.append("기압은 ${data?.main?.pressure}\n")
-                    textView.append("습도은 ${data?.main?.humidity}\n")
-                }
+        override fun run(){
+            var retrofit = Retrofit.Builder()
+                .baseUrl("http://api.openweathermap.org")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+            var testRetrofit : testRetrofit = retrofit.create(testRetrofit::class.java)
+                testRetrofit.getWeather(region, key, lang, unit)?.enqueue(object: Callback<ReturnDateModel>{
+                    override fun onResponse(
+                        call: Call<ReturnDateModel>,
+                        response: Response<ReturnDateModel>
+                    ) {
+                        data = response.body()!!
+                        Log.d("성공", "onResponse: 성공")
+                        Log.d("값", "onResponse:${data}")
+                        Toast.makeText(this@MainActivity, "성공", Toast.LENGTH_LONG).show()
+                        var temp = String.format("%.1f",(data?.main?.temp?.toFloat())?.minus(273.0))
+                        var message : Message = Message.obtain()
+                        message.what = 1
+                        message.arg1 = data?.main?.pressure?.toInt()
+                        message.arg2 = data?.main?.humidity?.toInt()
+                        message.obj = temp
+                        myHandler.sendMessage(message)
+                    }
 
-                override fun onFailure(call: Call<ReturnDateModel>, t: Throwable) {
-                    Log.d("실패", "onFailure: $t")
-                    Toast.makeText(this@MainActivity, "fail", Toast.LENGTH_LONG).show()
+                    override fun onFailure(call: Call<ReturnDateModel>, t: Throwable) {
+                        Log.d("실패", "onFailure: $t")
+                        Toast.makeText(this@MainActivity, "fail", Toast.LENGTH_LONG).show()
+                    }
+               })
+        }
+    }
+    inner class MyHandler : Handler(){
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+
+            when(msg.what){
+                1 -> {
+                    textView.append("서울날씨\n")
+                    textView.append("온도는 ${msg.obj}\n")
+                    textView.append("기압은 ${msg.arg1}\n")
+                    textView.append("습도은 ${msg.arg2}\n")
                 }
-            })
+            }
         }
     }
 }
