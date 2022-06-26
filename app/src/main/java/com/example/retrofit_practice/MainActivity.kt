@@ -30,6 +30,10 @@ class MainActivity : AppCompatActivity() {
             myThread = MyThread("seoul")
             myThread!!.start()
         }
+        button_suwon.setOnClickListener {
+            myThread = MyThread("suwon")
+            myThread!!.start()
+        }
     }
     inner class MyThread(regionData : String) : Thread() {
         var region = regionData
@@ -51,11 +55,14 @@ class MainActivity : AppCompatActivity() {
                         Log.d("성공", "onResponse: 성공")
                         Log.d("값", "onResponse:${data}")
                         Toast.makeText(this@MainActivity, "성공", Toast.LENGTH_LONG).show()
-                        var temp = String.format("%.1f",(data?.main?.temp?.toFloat())?.minus(273.0))
+                        var temp = String.format("%.1f",(data.main.temp.toFloat()).minus(273.0))
                         var message : Message = Message.obtain()
-                        message.what = 1
-                        message.arg1 = data?.main?.pressure?.toInt()
-                        message.arg2 = data?.main?.humidity?.toInt()
+                        when(region) {
+                            "suwon" -> message.what = 0
+                            "seoul" -> message.what = 1
+                        }
+                        message.arg1 = data.main.pressure.toInt()
+                        message.arg2 = data.main.humidity.toInt()
                         message.obj = temp
                         myHandler.sendMessage(message)
                     }
@@ -74,6 +81,12 @@ class MainActivity : AppCompatActivity() {
             when(msg.what){
                 1 -> {
                     textView.append("서울날씨\n")
+                    textView.append("온도는 ${msg.obj}\n")
+                    textView.append("기압은 ${msg.arg1}\n")
+                    textView.append("습도은 ${msg.arg2}\n")
+                }
+                0 -> {
+                    textView.append("수원날씨\n")
                     textView.append("온도는 ${msg.obj}\n")
                     textView.append("기압은 ${msg.arg1}\n")
                     textView.append("습도은 ${msg.arg2}\n")
