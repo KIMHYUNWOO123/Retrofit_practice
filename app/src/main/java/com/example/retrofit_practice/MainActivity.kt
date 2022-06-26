@@ -12,6 +12,8 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.math.log
+import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 
 class MainActivity : AppCompatActivity() {
@@ -19,28 +21,29 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        var key = "218c73d60692af6965fa11c043c3bf2d"
+        var lang = "kr"
+        var unit = "metric"
         var retrofit = Retrofit.Builder()
-            .baseUrl("http:/172.30.1.24:8000")
+            .baseUrl("http://api.openweathermap.org")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         var testRetrofit : testRetrofit = retrofit.create(testRetrofit::class.java)
-        btn.setOnClickListener{
-            var id = id.text.toString()
-            var pw = pw.text.toString()
-            var name = name.text.toString()
-            var birth = birth.text.toString()
-            testRetrofit.test(id,pw,name, birth)?.enqueue(object: Callback<ReturnDateModel>{
+        button_seoul.setOnClickListener{
+            var region = "seoul"
+            testRetrofit.getWeather(region, key, lang, unit)?.enqueue(object: Callback<ReturnDateModel>{
                 override fun onResponse(
                     call: Call<ReturnDateModel>,
                     response: Response<ReturnDateModel>
                 ) {
                     data = response.body()
                     Log.d("성공", "onResponse: 성공")
-                    Log.d("값", "onResponse:$data ")
+                    Log.d("값", "onResponse:${data}")
                     Toast.makeText(this@MainActivity, "성공", Toast.LENGTH_LONG).show()
-                    code.text = data?.code
-                    msg.text = data?.msg
+                    var temp = (data?.main?.temp?.toFloat())?.minus(273.0)
+                    textView.append("온도는 ${String.format("%.1f",temp)}\n")
+                    textView.append("기압은 ${data?.main?.pressure}\n")
+                    textView.append("습도은 ${data?.main?.humidity}\n")
                 }
 
                 override fun onFailure(call: Call<ReturnDateModel>, t: Throwable) {
