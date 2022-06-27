@@ -109,6 +109,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 2 -> {
                     setDataFragment(BusanWeatherFragment(), data)
+
                 }
             }
         }
