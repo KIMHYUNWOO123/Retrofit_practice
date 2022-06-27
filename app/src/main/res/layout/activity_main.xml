@@ -1,37 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:id="@+id/fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/btn_layout">
+
+    </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/btn_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
 
         <Button
-            android:id="@+id/button_seoul"
-            android:layout_width="match_parent"
+            android:id="@+id/btnSeoul"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="서울날씨" />
+            android:layout_weight="1"
+            android:text="서울" />
+
         <Button
-            android:id="@+id/button_suwon"
-            android:layout_width="match_parent"
+            android:id="@+id/btnSuwon"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="수원날씨" />
+            android:layout_weight="1"
+            android:text="수원" />
 
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="1500dp"
-            android:textSize="20dp" />
-
+        <Button
+            android:id="@+id/btnBusan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="부산" />
     </LinearLayout>
 
-</ScrollView>
+</RelativeLayout>

@@ -2,39 +2,60 @@ package com.example.retrofit_practice
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.os.Message
+import android.os.Handler
 import android.util.Log
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_main.*
+import com.example.retrofit_practice.databinding.ActivityMainBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlin.math.log
-import kotlin.math.roundToInt
-import kotlin.math.roundToLong
+
 
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
     lateinit var data:ReturnDateModel
     private var myThread : MyThread? = null
     lateinit var myHandler : MyHandler
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         myHandler = MyHandler()
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        button_seoul.setOnClickListener {
+        binding.btnSeoul.setOnClickListener {
             myThread = MyThread("seoul")
             myThread!!.start()
+
         }
-        button_suwon.setOnClickListener {
+        binding.btnSuwon.setOnClickListener {
             myThread = MyThread("suwon")
             myThread!!.start()
         }
+        binding.btnBusan.setOnClickListener {
+            myThread = MyThread("busan")
+            myThread!!.start()
+        }
     }
+
+    private fun setDataFragment(fragment : androidx.fragment.app.Fragment , data : ArrayList<String>) {
+        val bundle = Bundle()
+        bundle.putStringArrayList("data", data)
+        fragment.arguments = bundle
+        setSwitchFragment(fragment)
+    }
+
+    private fun setSwitchFragment(fragment : androidx.fragment.app.Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
     inner class MyThread(regionData : String) : Thread() {
         var region = regionData
         var key = "218c73d60692af6965fa11c043c3bf2d"
@@ -60,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                         when(region) {
                             "suwon" -> message.what = 0
                             "seoul" -> message.what = 1
+                            "busan" -> message.what = 2
                         }
                         message.arg1 = data.main.pressure.toInt()
                         message.arg2 = data.main.humidity.toInt()
@@ -77,19 +99,16 @@ class MainActivity : AppCompatActivity() {
     inner class MyHandler : Handler(){
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
-
+            var data  = arrayListOf(msg.obj.toString(),msg.arg1.toString(),msg.arg2.toString())
             when(msg.what){
-                1 -> {
-                    textView.append("서울날씨\n")
-                    textView.append("온도는 ${msg.obj}\n")
-                    textView.append("기압은 ${msg.arg1}\n")
-                    textView.append("습도은 ${msg.arg2}\n")
-                }
                 0 -> {
-                    textView.append("수원날씨\n")
-                    textView.append("온도는 ${msg.obj}\n")
-                    textView.append("기압은 ${msg.arg1}\n")
-                    textView.append("습도은 ${msg.arg2}\n")
+                    setDataFragment(SuwonWeatherFragment(), data)
+                }
+                1 -> {
+                    setDataFragment(SeoulWeatherFragment(), data)
+                }
+                2 -> {
+                    setDataFragment(BusanWeatherFragment(), data)
                 }
             }
         }

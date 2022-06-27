@@ -3,7 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/workspace/Retrofit_practice/app/src/main/res/layout/activity_main.xml" value="0.17916666666666667" />
+        <entry key="..\:/workspace/Retrofit_practice/app/src/main/res/layout/activity_main.xml" value="0.13333333333333333" />
+        <entry key="..\:/workspace/Retrofit_practice/app/src/main/res/layout/fragment_busan_weather.xml" value="0.1234375" />
+        <entry key="..\:/workspace/Retrofit_practice/app/src/main/res/layout/fragment_seoul_weather.xml" value="0.1" />
+        <entry key="..\:/workspace/Retrofit_practice/app/src/main/res/layout/fragment_suwon_weather.xml" value="0.1234375" />
       </map>
     </option>
   </component>
