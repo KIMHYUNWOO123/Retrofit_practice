@@ -6,7 +6,13 @@ import android.os.Message
 import android.os.Handler
 import android.util.Log
 import android.widget.Toast
+import com.example.retrofit_practice.fragment.BusanWeatherFragment
+import com.example.retrofit_practice.fragment.SeoulWeatherFragment
+import com.example.retrofit_practice.fragment.SuwonWeatherFragment
 import com.example.retrofit_practice.databinding.ActivityMainBinding
+import com.example.retrofit_practice.retrofit.OpenWeather
+import com.example.retrofit_practice.retrofit.RetrofitManage
+import com.example.retrofit_practice.retrofit.ReturnDateModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -14,10 +20,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    lateinit var data:ReturnDateModel
+    lateinit var data: ReturnDateModel
     private var myThread : MyThread? = null
     lateinit var myHandler : MyHandler
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +62,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class MyThread(regionData : String) : Thread() {
+        var TAG = "Main"
         var region = regionData
         var key = "218c73d60692af6965fa11c043c3bf2d"
         var lang = "kr"
@@ -66,8 +72,9 @@ class MainActivity : AppCompatActivity() {
                 .baseUrl("http://api.openweathermap.org")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-            var testRetrofit : testRetrofit = retrofit.create(testRetrofit::class.java)
-                testRetrofit.getWeather(region, key, lang, unit)?.enqueue(object: Callback<ReturnDateModel>{
+            var testRetrofit : OpenWeather = retrofit.create(OpenWeather::class.java)
+                testRetrofit.getWeather(region, key, lang, unit)?.enqueue(object:
+                    Callback<ReturnDateModel> {
                     override fun onResponse(
                         call: Call<ReturnDateModel>,
                         response: Response<ReturnDateModel>
@@ -94,6 +101,8 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this@MainActivity, "fail", Toast.LENGTH_LONG).show()
                     }
                })
+//            var response = RetrofitManage.instance.getWeatherData(region)
+//            Log.d(TAG, "run: $response")
         }
     }
     inner class MyHandler : Handler(){

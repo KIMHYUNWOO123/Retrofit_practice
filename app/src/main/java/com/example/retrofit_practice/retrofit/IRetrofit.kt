@@ -1,11 +1,9 @@
-package com.example.retrofit_practice
+package com.example.retrofit_practice.retrofit
 
 import retrofit2.Call
 import retrofit2.http.*
 
-interface testRetrofit {
-
-
+interface OpenWeather {
     @GET("/data/2.5/weather?")
     fun getWeather(
         @Query("q") region : String,
@@ -13,5 +11,4 @@ interface testRetrofit {
         @Query("lang") lang : String,
         @Query("unit") unit : String
     ) : Call<ReturnDateModel>
-
 }
