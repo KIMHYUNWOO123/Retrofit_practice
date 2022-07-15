@@ -2,16 +2,16 @@ package com.example.retrofit_practice.retrofit
 
 data class ReturnDateModel(
     val main : MainBody,
-    val weather : weatherBody
+    val weather : List<WeatherBody>
     )
 
 data class MainBody(
     val temp : String,
-    val pressure : String,
+    val feels_like : String,
     val humidity : String
     )
 
-data class weatherBody (
+data class WeatherBody (
     val main : String,
     val description : String
     )

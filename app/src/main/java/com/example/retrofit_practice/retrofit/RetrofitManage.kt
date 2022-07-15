@@ -5,6 +5,8 @@ import com.example.retrofit_practice.utils.data
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.http.Body
+import java.lang.Thread.sleep
 
 
 class RetrofitManage {
@@ -16,6 +18,7 @@ class RetrofitManage {
     private var iRetrofit : OpenWeather? = RetrofitClient.getRetrofit(data.BASEURL)!!.create(OpenWeather :: class.java)
 
     fun getWeatherData(region : String) : Response<ReturnDateModel>? {
+        Log.d("Region", region)
         var call = iRetrofit?.getWeather(region,data.KEY,data.LANGUAGE, data.UNIT)
 
         call?.enqueue(object : Callback<ReturnDateModel>
@@ -24,7 +27,7 @@ class RetrofitManage {
                 call: Call<ReturnDateModel>,
                 response: Response<ReturnDateModel>
             ) {
-                Log.d(TAG, "onResponse: 성공")
+                Log.d(TAG, "onResponse: $response")
                 responseData = response
             }
 
