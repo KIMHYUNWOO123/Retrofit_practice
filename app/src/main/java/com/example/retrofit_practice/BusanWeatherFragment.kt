@@ -21,9 +21,9 @@ class BusanWeatherFragment : Fragment() {
         arguments?.let {
             data = it.getString("data")
         }
-        Log.d("Seoul", "onCreate:$data ")
+        Log.d("Busan", "onCreate:$data ")
         var split = data?.split(",") ?: null
-        temp = split?.get(0)?.substring(14,20)
+        temp = split?.get(0)?.substring(14)
         temp = (temp?.toFloat()!! - 273.00).toString()
         temp = temp?.substring(0,2)
         feel

@@ -21,8 +21,9 @@ class SuwonWeatherFragment : Fragment() {
         arguments?.let {
             data = it.getString("data")
         }
+        Log.d("Suwon", data!!)
         var split = data?.split(",") ?: null
-        temp = split?.get(0)?.substring(14,20)
+        temp = split?.get(0)?.substring(14)
         temp = (temp?.toFloat()!! - 273.00).toString()
         temp = temp?.substring(0,2)
         feel = split?.get(1)?.substring(12)
@@ -32,7 +33,6 @@ class SuwonWeatherFragment : Fragment() {
         main = split?.get(4)?.substring(13)
         var index = main?.length
         main = main?.substring(0, index!! - 2)
-        Log.d("feel", feel.toString())
     }
 
     override fun onCreateView(

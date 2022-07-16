@@ -1,7 +1,7 @@
 package com.example.retrofit_practice.utils
 
 object data {
-    const val KEY = "218c73d60692af6965fa11c043c3bf2d"
+    const val KEY = "542ffd081e67f4512b705f89d2a611b2"
     const val UNIT = "metric"
     const val LANGUAGE = "kr"
     const val BASEURL = "http://api.openweathermap.org"

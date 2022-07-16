@@ -13,10 +13,10 @@ import kotlin.math.log
 
 
 class MainActivity : AppCompatActivity() {
-    var TAG = "Retrofit"
+    var response : Response<ReturnDateModel>? = null
     private lateinit var binding: ActivityMainBinding
     private var myThread : MyThread? = null
-    lateinit var myHandler : MyHandler
+    lateinit var myHandler :MyHandler
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         myHandler = MyHandler()
@@ -25,9 +25,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
 
         binding.btnSeoul.setOnClickListener {
+            Log.d("btn", "onCreate: ")
             myThread = MyThread("seoul")
             myThread!!.start()
-
         }
         binding.btnSuwon.setOnClickListener {
             myThread = MyThread("suwon")
@@ -42,7 +42,6 @@ class MainActivity : AppCompatActivity() {
     private fun setDataFragment(fragment : androidx.fragment.app.Fragment , data : String) {
         val bundle = Bundle()
         bundle.putString("data", data)
-        Log.d(TAG, "setDataFragment: $data")
         fragment.arguments = bundle
         setSwitchFragment(fragment)
     }
@@ -55,33 +54,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class MyThread(regionData : String) : Thread() {
-        var TAG = "Main"
         var region = regionData
         override fun run(){
-            Log.d("지역", region)
-            var message = Message.obtain()
-            var response = RetrofitManage.instance.getWeatherData(region)
-            if(response != null){
-                var body = response?.body()
-                Log.d(TAG, "run: $body")
-                message.obj = "${body?.main},${body?.weather}"
-                Log.d("main", message.obj.toString())
-                message.what =
-                    when(region){
-                        "seoul" -> 1
-                        "suwon" -> 0
-                        "busan" -> 2
-                        else -> 3
-                    }
-                myHandler.sendMessage(message)
-            }
+            RetrofitManage.instance.getWeatherData(myHandler,region)
         }
     }
-    inner class MyHandler : Handler(){
+    inner class MyHandler : Handler() {
+
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
-            var data : String = msg.obj.toString()
-            when(msg.what){
+            var data: String = msg.obj.toString()
+            when (msg.what) {
                 0 -> {
                     setDataFragment(SuwonWeatherFragment(), data)
                 }
